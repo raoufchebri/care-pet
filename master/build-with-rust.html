@@ -1,0 +1,773 @@
+
+
+<!DOCTYPE html>
+<html class="no-js" lang="en">
+    
+    
+
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width initial-scale=1" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <title>
+             Build an IoT App with Rust | Scylla Docs 
+        </title>
+        <meta name="description" content="ScyllaDB IoT Example Documentation" />
+        <link rel="icon" href="_static/img/favicon.ico" type="image/x-icon" />
+        <link rel="icon" href="_static/img/favicon-32x32.png" sizes="32x32" />
+        <link rel="icon" href="_static/img/favicon-228x228.png" sizes="192x192" />
+        <link rel="apple-touch-icon" href="_static/img/favicon-228x228.png" />
+        <meta name="msapplication-TileImage" href="_static/img/favicon-228x228.png" />
+        
+            
+            <link rel="canonical" href="https://care-pet.docs.scylladb.com/stable/build-with-rust.html"/>
+        
+        <link rel="author" href="mailto:info@scylladb.com" />
+
+        
+            
+        <!-- increase expertrec loading priority-->
+        <link rel="dns-prefetch" href="https://cse.expertrec.com">
+
+        <!-- increase font loading priority -->
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link rel="preload" as="style"
+            href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,400;0,500;0,700;1,400&display=swap" />
+
+        <!-- async CSS -->
+        <link rel="stylesheet" media="print" onload="this.onload=null;this.removeAttribute('media');"
+            href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,400;0,500;0,700;1,400&display=swap" />
+
+        <!-- no-JS fallback -->
+        <noscript>
+            <link rel="stylesheet"
+                href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,400;0,500;0,700;1,400&display=swap" />
+        </noscript>
+        
+            
+                <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+            
+        
+            
+                <link rel="stylesheet" type="text/css" href="_static/css/main.css" />
+            
+        
+            
+                <link rel="stylesheet" type="text/css" href="_static/sphinx_collapse.css" />
+            
+        
+            
+                <link rel="stylesheet" type="text/css" href="_static/copybutton.css" />
+            
+        
+    
+        
+        
+            
+
+        <script type="text/javascript" id="documentation_options" data-url_root="./"
+            src="_static/documentation_options.js"></script>
+        <script type="text/javascript" src="_static/js/runtime.bundle.js"></script>
+        <script type="text/javascript" src="_static/js/main.bundle.js"></script>
+        
+            
+                <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+            
+        
+            
+        
+            
+                <script src="_static/underscore.js"></script>
+            
+        
+            
+                <script src="_static/doctools.js"></script>
+            
+        
+            
+                <script src="_static/clipboard.min.js"></script>
+            
+        
+            
+                <script src="_static/copybutton.js"></script>
+            
+        
+    
+            <!-- Google Tag Manager -->
+<script>
+    (function (w, d, s, l, i) {
+        w[l] = w[l] || [];
+        w[l].push({
+            "gtm.start": new Date().getTime(),
+            event: "gtm.js"
+        });
+        var f = d.getElementsByTagName(s)[0],
+        j = d.createElement(s),
+        dl = l != "dataLayer" ? "&l=" + l : "";
+        j.async = true;
+        j.src = "https://www.googletagmanager.com/gtm.js?id=" + i + dl;
+        f.parentNode.insertBefore(j, f);
+    })(window, document, "script", "dataLayer", "GTM-T8P2JP");
+</script>
+<!-- End Google Tag Manager -->
+<!-- Marketo -->
+<script type="text/javascript">
+    (function () {
+        var didInit = false;
+
+        function initMunchkin() {
+            if (didInit === false) {
+                didInit = true;
+                Munchkin.init("791-QBF-350");
+            }
+        }
+        var s = document.createElement("script");
+        s.type = "text/javascript";
+        s.async = true;
+        s.src = "//munchkin.marketo.net/munchkin.js";
+        s.onreadystatechange = function () {
+            if (this.readyState == "complete" || this.readyState == "loaded") {
+                initMunchkin();
+            }
+        };
+        s.onload = initMunchkin;
+        document.getElementsByTagName("head")[0].appendChild(s);
+    })();
+</script>
+<!-- End Marketo -->
+<!-- Expertrec -->
+<script>
+    var id = "e2077224-9ccf-11e9-a0c9-0242ac130002";
+    var ci_search = document.createElement("script");
+    ci_search.type = "text/javascript";
+    ci_search.async = true;
+    ci_search.src = "https://cse.expertrec.com/api/js/ci_common.js?id=" + id;
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(ci_search, s);
+</script>
+<!-- End Expertrec -->
+        
+        <!-- Font Awesome -->
+        <script src="https://kit.fontawesome.com/b1870adf6a.js" crossorigin="anonymous"></script>
+        <!-- End Font Awesome -->
+    </head>
+
+    <body>
+        
+        <header class="header">
+    <div class="header-logo">
+        <a class="header-logo__img" href="https://scylladb.com/">
+            <img src="_static/img/logo-docs.svg" alt="Scylla Documentation Logo" />
+        </a>
+        <span class="header-logo__bar"></span>
+        <a class="header-logo__text" href="https://docs.scylladb.com/">
+            Documentation
+        </a>
+    </div>
+    <div class="header-navigation">
+        <ul class="dropdown menu scylla-dropdown scylla-dropdown--header" data-dropdown-menu>
+            <li class="scylla-dropdown__item">
+                <a href="#" class="scylla-dropdown__title">Server
+                    <i class="chevron scylla-icon scylla-icon--triangle-down"></i></a>
+                <ul class="menu scylla-dropdown__content">
+                    <li>
+                        <a href="https://docs.scylladb.com/">
+                            <i class="scylla-icon scylla-icon--about-us"></i>
+                            Scylla Open Source
+                        </a>
+                    </li>
+                    <li>
+                        <a href="https://docs.scylladb.com/">
+                            <i class="scylla-icon scylla-icon--enterprise"></i>Scylla Enterprise
+                        </a>
+                    </li>
+                    <li>
+                        <a href="https://scylla.docs.scylladb.com/stable/alternator/alternator.html">
+                            <i class="scylla-icon scylla-icon--overview"></i>
+                            Scylla Alternator
+                        </a>
+                    </li>
+                </ul>
+            </li>
+            <li class="scylla-dropdown__item">
+                <a href="#" class="scylla-dropdown__title">Cloud <i
+                    class="chevron scylla-icon scylla-icon--triangle-down"></i></a>
+                <ul class="menu scylla-dropdown__content">
+                    <li>
+                        <a href="https://cloud.scylladb.com/">
+                            <i class="scylla-icon scylla-icon--cloud"></i>Scylla Cloud</a>
+                    </li>
+                    <li>
+                        <a href="https://docs.scylladb.com/scylla-cloud/">
+                            <i class="scylla-icon scylla-icon--cloud-docs"></i>Scylla Cloud
+                            Docs</a>
+                    </li>
+                </ul>
+            </li>
+            <li class="scylla-dropdown__item">
+                <a href="#" class="scylla-dropdown__title">Tools <i
+                    class="chevron scylla-icon scylla-icon--triangle-down"></i></a>
+                <ul class="menu scylla-dropdown__content">
+                    <li>
+                        <a href="https://manager.docs.scylladb.com/">
+                            <i class="scylla-icon scylla-icon--manager"></i>Scylla Manager</a>
+                    </li>
+                    <li>
+                        <a href="https://monitoring.docs.scylladb.com/">
+                            <i class="scylla-icon scylla-icon--monitoring"></i>Scylla
+                            Monitoring Stack</a>
+                    </li>
+                    <li>
+                        <a href="https://operator.docs.scylladb.com/">
+                            <i class="scylla-icon scylla-icon--operator"></i>Scylla Operator
+                        </a>
+                    </li>
+                </ul>
+            </li>
+            <li class="scylla-dropdown__item">
+                <a href="#" class="scylla-dropdown__title">Drivers <i
+                    class="chevron scylla-icon scylla-icon--triangle-down"></i></a>
+                <ul class="menu scylla-dropdown__content">
+                    <li>
+                        <a href="https://docs.scylladb.com/using-scylla/drivers/cql-drivers/">
+                            <i class="scylla-icon scylla-icon--nsql-guides"></i>CQL Drivers
+                        </a>
+                    </li>
+                    <li>
+                        <a href="https://docs.scylladb.com/using-scylla/drivers/dynamo-drivers/">
+                            <i class="scylla-icon scylla-icon--overview"></i>DynamoDB Drivers
+                        </a>
+                    </li>
+                </ul>
+            </li>
+        </ul>
+        <div class="header-button">
+            <a href="https://www.scylladb.com/download/" class="button">Download</a>
+        </div>
+    </div>
+    <div class="header-search-box">
+        <div class="search-box">
+            <ci-search></ci-search>
+        </div>
+    </div>
+    <div class="side-nav-toggle" data-toggle="side-nav">
+    <div class="side-nav-toggle__button">
+        <img src="_static/img/menu.svg" alt="Menu" />
+    </div>
+</div>
+</header>
+        <section
+            class="layout  layout--sidebar layout--has-secondary-sidebar ">
+            <div class="content large-order-2">
+                
+                    
+                
+                
+                    <div class="pre-content">
+                        <div class="breadcrumbs">
+    <span class="bread__item">
+        <a href="index.html"
+            class="bread__highlight">
+            <i class="fas fa-home"></i> ScyllaDB IoT Example Documentation
+        </a>
+    </span>
+    
+    <span class="bread__item bread__item--last">Build an IoT App with Rust</span>
+</div>
+                    </div>
+                
+                <section id="build-an-iot-app-with-rust">
+<h1>Build an IoT App with Rust<a class="headerlink" href="#build-an-iot-app-with-rust" title="Permalink to this headline">¶</a></h1>
+<section id="architecture">
+<h2>Architecture<a class="headerlink" href="#architecture" title="Permalink to this headline">¶</a></h2>
+<p>This section will walk through and explain the code for the different commands.
+As explained in the Getting Started page, the project is structured as follow:</p>
+<ul class="simple">
+<li><p>migrate (<code class="docutils literal notranslate"><span class="pre">/bin/migrate/main.rs</span></code>) - creates the <code class="docutils literal notranslate"><span class="pre">carepet</span></code> keyspace and tables</p></li>
+<li><p>collar (<code class="docutils literal notranslate"><span class="pre">/bin/sensor/main.rs</span></code>) - generates a pet health data and pushes it into the storage</p></li>
+<li><p>web app (<code class="docutils literal notranslate"><span class="pre">/main.rs</span></code>) - REST API service for tracking pets health state</p></li>
+</ul>
+</section>
+<section id="migrate">
+<h2>Migrate<a class="headerlink" href="#migrate" title="Permalink to this headline">¶</a></h2>
+<p>Start by creating a local ScyllaDB cluster consisting of 3 nodes:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ docker-compose up -d
+</pre></div>
+</div>
+<p>Docker-compose will spin up a ScyllaDB cluster consisting of 3 nodes (carepet-scylla1, carepet-scylla2 and carepet-scylla3) along with the app (for example go-app) container.  Wait for about two minutes and check the status of the cluster: To check the status of the cluster:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ docker exec -it carepet-scylla1 nodetool status
+</pre></div>
+</div>
+<p>Once all the nodes are in UN - Up Normal status, run the below commands:</p>
+<p>The below command allows you to get node IP address:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">docker</span> <span class="n">inspect</span> <span class="o">-</span><span class="n">f</span> <span class="s1">&#39;{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}&#39;</span> <span class="n">carepet</span><span class="o">-</span><span class="n">scylla1</span>
+</pre></div>
+</div>
+<p>The run the following commands to execute the migrate main function.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>NODE1=$(docker inspect -f &#39;{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}&#39; carepet-scylla1)
+cargo run --bin migrate -- --hosts $NODE1
+</pre></div>
+</div>
+<p>The command executes the main function in the <code class="docutils literal notranslate"><span class="pre">bin/migrate/main.rs</span></code>. The function creates the keyspace and tables that you need to run the collar and server services.</p>
+<p>The below code in the <code class="docutils literal notranslate"><span class="pre">bin/migrate/main.rs</span></code> creates a new session then calls the <code class="docutils literal notranslate"><span class="pre">create_keyspace</span></code> , <code class="docutils literal notranslate"><span class="pre">migrate</span></code> functions.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>// migrate/main.rs
+
+async fn main() -&gt; Result&lt;()&gt; {
+    care_pet::log::init();
+
+    let app = App::from_args();
+    debug!(&quot;Configuration = {:?}&quot;, app);
+
+    info!(&quot;Bootstrapping database...&quot;);
+
+    let sess = db::new_session(&amp;app.db_config).await?;
+
+    db::create_keyspace(&amp;sess).await?;
+    db::migrate(&amp;sess).await?;
+
+    Ok(())
+}
+</pre></div>
+</div>
+<p>The <code class="docutils literal notranslate"><span class="pre">new_session</span></code> function takes the config as a parameter and uses <code class="docutils literal notranslate"><span class="pre">SessionBuilder</span></code> class to crete a new session.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>// db/mod.rs
+
+pub async fn new_session(config: &amp;Config) -&gt; Result&lt;Session&gt; {
+    info!(&quot;Connecting to {}&quot;, config.hosts.join(&quot;, &quot;));
+
+    SessionBuilder::new()
+        .known_nodes(&amp;config.hosts)
+        .connection_timeout(config.timeout.into())
+        .user(
+            config.username.clone().unwrap_or_default(),
+            config.password.clone().unwrap_or_default(),
+        )
+        .build()
+        .await
+        .map_err(From::from)
+}
+</pre></div>
+</div>
+<p>For more information about creating a new session with the Rust Driver, please have a look at the <a class="reference external" href="https://rust-driver.docs.scylladb.com/stable/quickstart/example.html">docs</a>.</p>
+<p><code class="docutils literal notranslate"><span class="pre">create_keyspace</span></code> function takes a session as an argument and creates a keyspace as defined in <code class="docutils literal notranslate"><span class="pre">db/keyspace.cql</span></code>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">CREATE</span> <span class="n">KEYSPACE</span> <span class="n">IF</span> <span class="n">NOT</span> <span class="n">EXISTS</span> <span class="n">carepet</span> <span class="n">WITH</span> <span class="n">replication</span> <span class="o">=</span> <span class="p">{</span> <span class="s1">&#39;class&#39;</span><span class="p">:</span> <span class="s1">&#39;NetworkTopologyStrategy&#39;</span><span class="p">,</span> <span class="s1">&#39;replication_factor&#39;</span><span class="p">:</span> <span class="s1">&#39;3&#39;</span> <span class="p">};</span>
+</pre></div>
+</div>
+<p>The CQL query above creates a new keyspace named carepet, with <code class="docutils literal notranslate"><span class="pre">NetworkTopologyStrategy</span></code> as replication strategy and a replication factor of 3.
+More information about keyspace and replication on <a class="reference external" href="https://university.scylladb.com/courses/data-modeling/lessons/basic-data-modeling-2/topic/keyspace/">Scylla University</a>.</p>
+<p>Finally, <code class="docutils literal notranslate"><span class="pre">migrate</span></code> will execute the queries listed in <code class="docutils literal notranslate"><span class="pre">db/migrate.cql</span></code> to create the tables you need for the project.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">CREATE</span> <span class="n">TABLE</span> <span class="n">IF</span> <span class="n">NOT</span> <span class="n">EXISTS</span> <span class="n">carepet</span><span class="o">.</span><span class="n">owner</span>
+<span class="p">(</span>
+    <span class="n">owner_id</span> <span class="n">UUID</span><span class="p">,</span>
+    <span class="n">address</span> <span class="n">TEXT</span><span class="p">,</span>
+    <span class="n">name</span>    <span class="n">TEXT</span><span class="p">,</span>
+    <span class="n">PRIMARY</span> <span class="n">KEY</span> <span class="p">(</span><span class="n">owner_id</span><span class="p">)</span>
+<span class="p">);</span>
+
+<span class="o">...</span>
+</pre></div>
+</div>
+<p>You can check the database structure with:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">docker</span> <span class="n">exec</span> <span class="o">-</span><span class="n">it</span> <span class="n">carepet</span><span class="o">-</span><span class="n">scylla1</span> <span class="n">cqlsh</span>
+<span class="n">cqlsh</span><span class="o">&gt;</span> <span class="n">USE</span> <span class="n">carepet</span><span class="p">;</span>
+<span class="n">cqlsh</span><span class="p">:</span><span class="n">carepet</span><span class="o">&gt;</span> <span class="n">DESCRIBE</span> <span class="n">TABLES</span>
+<span class="n">cqlsh</span><span class="p">:</span><span class="n">carepet</span><span class="o">&gt;</span> <span class="n">DESCRIBE</span> <span class="n">TABLE</span> <span class="n">pet</span>
+</pre></div>
+</div>
+<p>You should expect the following result:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">CREATE</span> <span class="n">TABLE</span> <span class="n">carepet</span><span class="o">.</span><span class="n">pet</span> <span class="p">(</span>
+    <span class="n">owner_id</span> <span class="n">uuid</span><span class="p">,</span>
+    <span class="n">pet_id</span> <span class="n">uuid</span><span class="p">,</span>
+    <span class="n">chip_id</span> <span class="n">text</span><span class="p">,</span>
+    <span class="n">species</span> <span class="n">text</span><span class="p">,</span>
+    <span class="n">breed</span>   <span class="n">text</span><span class="p">,</span>
+    <span class="n">color</span>   <span class="n">text</span><span class="p">,</span>
+    <span class="n">gender</span>  <span class="n">text</span><span class="p">,</span>
+    <span class="n">address</span> <span class="n">text</span><span class="p">,</span>
+    <span class="n">age</span> <span class="nb">int</span><span class="p">,</span>
+    <span class="n">name</span> <span class="n">text</span><span class="p">,</span>
+    <span class="n">weight</span> <span class="nb">float</span><span class="p">,</span>
+    <span class="n">PRIMARY</span> <span class="n">KEY</span> <span class="p">(</span><span class="n">owner_id</span><span class="p">,</span> <span class="n">pet_id</span><span class="p">)</span>
+<span class="p">)</span> <span class="n">WITH</span> <span class="n">CLUSTERING</span> <span class="n">ORDER</span> <span class="n">BY</span> <span class="p">(</span><span class="n">pet_id</span> <span class="n">ASC</span><span class="p">)</span>
+    <span class="n">AND</span> <span class="n">bloom_filter_fp_chance</span> <span class="o">=</span> <span class="mf">0.01</span>
+    <span class="n">AND</span> <span class="n">caching</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;keys&#39;</span><span class="p">:</span> <span class="s1">&#39;ALL&#39;</span><span class="p">,</span> <span class="s1">&#39;rows_per_partition&#39;</span><span class="p">:</span> <span class="s1">&#39;ALL&#39;</span><span class="p">}</span>
+    <span class="n">AND</span> <span class="n">comment</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+    <span class="n">AND</span> <span class="n">compaction</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;class&#39;</span><span class="p">:</span> <span class="s1">&#39;SizeTieredCompactionStrategy&#39;</span><span class="p">}</span>
+    <span class="n">AND</span> <span class="n">compression</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;sstable_compression&#39;</span><span class="p">:</span> <span class="s1">&#39;org.apache.cassandra.io.compress.LZ4Compressor&#39;</span><span class="p">}</span>
+    <span class="n">AND</span> <span class="n">crc_check_chance</span> <span class="o">=</span> <span class="mf">1.0</span>
+    <span class="n">AND</span> <span class="n">dclocal_read_repair_chance</span> <span class="o">=</span> <span class="mf">0.1</span>
+    <span class="n">AND</span> <span class="n">default_time_to_live</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">AND</span> <span class="n">gc_grace_seconds</span> <span class="o">=</span> <span class="mi">864000</span>
+    <span class="n">AND</span> <span class="n">max_index_interval</span> <span class="o">=</span> <span class="mi">2048</span>
+    <span class="n">AND</span> <span class="n">memtable_flush_period_in_ms</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">AND</span> <span class="n">min_index_interval</span> <span class="o">=</span> <span class="mi">128</span>
+    <span class="n">AND</span> <span class="n">read_repair_chance</span> <span class="o">=</span> <span class="mf">0.0</span>
+    <span class="n">AND</span> <span class="n">speculative_retry</span> <span class="o">=</span> <span class="s1">&#39;99.0PERCENTILE&#39;</span><span class="p">;</span>
+</pre></div>
+</div>
+</section>
+<section id="sensor">
+<h2>Sensor<a class="headerlink" href="#sensor" title="Permalink to this headline">¶</a></h2>
+<p>The sensor service simulates the collar’s activity and periodically saves data to the database. Use the below commands to run the sensor service:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ NODE1=$(docker inspect -f &#39;{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}&#39; carepet-scylla1)
+$ cargo run --bin sensor -- --hosts $NODE1 --measure 5s --buffer-interval 1m
+</pre></div>
+</div>
+<p>The above command executes <code class="docutils literal notranslate"><span class="pre">bin/sensor/main.rs</span></code> and and takes the following as arguments.</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">hosts</span></code> : the IP address of the ScyllaDB node.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">measure</span></code>: the interval between to sensor measures.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">buffer-interval</span></code>: the interval between two database queries.</p></li>
+</ul>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>// sensor/main.rs
+
+#[tokio::main]
+async fn main() -&gt; Result&lt;()&gt; {
+    care_pet::log::init();
+
+    let app = App::from_args();
+    debug!(&quot;Configuration = {:?}&quot;, &amp;app);
+
+    info!(&quot;Welcome to the Pet collar simulator&quot;);
+
+    let sess = db::new_session_with_keyspace(&amp;app.db_config).await?;
+
+    let (owner, pet, sensors) = random_data();
+    save_data(&amp;sess, &amp;owner, &amp;pet, &amp;sensors).await?;
+    run_sensor_data(&amp;app, &amp;sess, sensors).await?;
+
+    Ok(())
+}
+</pre></div>
+</div>
+<p>The <code class="docutils literal notranslate"><span class="pre">app</span></code> object contains the command’s arguments listed above.
+We then create a new session <code class="docutils literal notranslate"><span class="pre">sess</span></code> using <code class="docutils literal notranslate"><span class="pre">new_session_with_keyspace</span></code> function defined in <code class="docutils literal notranslate"><span class="pre">db/mod.rs</span></code>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>// db/mod.rs
+
+pub async fn new_session_with_keyspace(config: &amp;Config) -&gt; Result&lt;Session&gt; {
+    let session = new_session(config).await?;
+    session.use_keyspace(KEYSPACE, true).await?;
+    Ok(session)
+}
+</pre></div>
+</div>
+<p>The <code class="docutils literal notranslate"><span class="pre">save_data</span></code> method connects to the datbase and saves random <code class="docutils literal notranslate"><span class="pre">owner</span></code>, <code class="docutils literal notranslate"><span class="pre">pet</span></code> and the <code class="docutils literal notranslate"><span class="pre">sensors</span></code> to the database using <code class="docutils literal notranslate"><span class="pre">insert_query</span></code> macro defined in <code class="docutils literal notranslate"><span class="pre">src/mod.rs</span></code>.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>// sensor/main.rs
+
+async fn save_data(sess: &amp;Session, owner: &amp;Owner, pet: &amp;Pet, sensors: &amp;[Sensor]) -&gt; Result&lt;()&gt; {
+    sess.query(insert_query!(Owner), owner).await?;
+    info!(&quot;New owner # {}&quot;, owner.owner_id);
+
+    sess.query(insert_query!(Pet), pet).await?;
+    info!(&quot;New pet # {}&quot;, pet.pet_id);
+
+    for sensor in sensors {
+        sess.query(insert_query!(Sensor), sensor).await?;
+    }
+
+    Ok(())
+}
+</pre></div>
+</div>
+<p>The <code class="docutils literal notranslate"><span class="pre">run_sensor_data</span></code> generates random data and inserts it to the database every <code class="docutils literal notranslate"><span class="pre">buffer_interval</span></code>.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>async fn run_sensor_data(cfg: &amp;App, sess: &amp;Session, sensors: Vec&lt;Sensor&gt;) -&gt; Result&lt;()&gt; {
+    let measure: time::Duration = cfg.measure.into();
+    let buffer_interval: time::Duration = cfg.buffer_interval.into();
+
+    let mut last = Instant::now();
+    loop {
+        let mut measures = vec![];
+        while last.elapsed() &lt; buffer_interval {
+            sleep(measure).await;
+
+            for sensor in &amp;sensors {
+                let measure = read_sensor_data(sensor);
+                info!(
+                    &quot;sensor # {} type {} new measure {} ts {}&quot;,
+                    sensor.sensor_id,
+                    sensor.r#type.as_str(),
+                    &amp;measure.value,
+                    measure.ts.format_rfc3339(),
+                );
+
+                measures.push(measure);
+            }
+        }
+
+        last = last
+            + time::Duration::from_nanos(
+                (measure.as_nanos() * (last.elapsed().as_nanos() / measure.as_nanos())) as u64,
+            );
+
+        info!(&quot;Pushing data&quot;);
+
+        let batch = measures.iter().fold(Batch::default(), |mut batch, _| {
+            batch.append_statement(insert_query!(Measure));
+            batch
+        });
+
+        sess.batch(&amp;batch, measures)
+            .await
+            .map_err(|err| error!(&quot;execute batch query {:?}&quot;, err))
+            .ok();
+    }
+}
+</pre></div>
+</div>
+</section>
+<section id="server">
+<h2>Server<a class="headerlink" href="#server" title="Permalink to this headline">¶</a></h2>
+<p>The server service is a REST API for tracking the pets’ health state. The service was built using <a class="reference external" href="https://rocket.rs">Rocket</a> and allows users to query the database via HTTP.</p>
+<p>Run the following commands to start the server:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>NODE1=$(docker inspect -f &#39;{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}&#39; carepet-scylla1)
+cargo run -- --hosts $NODE1
+</pre></div>
+</div>
+<p>The <code class="docutils literal notranslate"><span class="pre">src/main.rs</span></code> main function mounts the api on <code class="docutils literal notranslate"><span class="pre">/api</span></code> and defines the routes.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>// src/main.rs
+
+#[rocket::main]
+async fn main() -&gt; Result&lt;()&gt; {
+    care_pet::log::init();
+
+    let app = App::from_args();
+    if app.verbose {
+        info!(&quot;Configuration = {:?}&quot;, app);
+    }
+
+    let sess = db::new_session_with_keyspace(&amp;app.db_config).await?;
+
+    rocket::build()
+        .mount(
+            &quot;/api&quot;,
+            routes![
+                handler::measures::find_sensor_data_by_sensor_id_and_time_range,
+                handler::owner::find_owner_by_id,
+                handler::pets::find_pets_by_owner_id,
+                handler::sensors::find_sensors_by_pet_id,
+                handler::avg::find_sensor_avg_by_sensor_id_and_day
+            ],
+        )
+        .manage(sess)
+        .launch()
+        .await
+        .map_err(From::from)
+}
+</pre></div>
+</div>
+<p>The handlers can be found in the <code class="docutils literal notranslate"><span class="pre">src/handler</span></code> folder for each route.</p>
+<p>Let’s have a look at <code class="docutils literal notranslate"><span class="pre">handler/mesure.rs</span></code> file:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>#[get(&quot;/sensor/&lt;id&gt;/values?&lt;from&gt;&amp;&lt;to&gt;&quot;)]
+pub async fn find_sensor_data_by_sensor_id_and_time_range(
+    session: &amp;State&lt;Session&gt;,
+    id: UuidParam,
+    from: DateTimeParam,
+    to: DateTimeParam,
+) -&gt; Result&lt;Json&lt;Vec&lt;f32&gt;&gt;, JsonError&gt; {
+    let rows = session
+        .query(
+            format!(
+                &quot;SELECT {} FROM {} WHERE {} = ? and {} &gt;= ? and {} &lt;= ?&quot;,
+                Measure::FIELD_NAMES.value,
+                Measure::table(),
+                Measure::FIELD_NAMES.sensor_id,
+                Measure::FIELD_NAMES.ts,
+                Measure::FIELD_NAMES.ts,
+            ),
+            (id.0, from.0, to.0),
+        )
+        .await
+        .map_err(|err| json_err(Status::InternalServerError, err))?
+        .rows
+        .unwrap_or_default()
+        .into_typed::&lt;(f32,)&gt;();
+
+    let values = rows
+        .map(|v| v.map(|v| v.0))
+        .collect::&lt;Result&lt;Vec&lt;_&gt;, _&gt;&gt;()
+        .map_err(|err| json_err(Status::InternalServerError, err))?;
+
+    Ok(Json(values))
+}
+</pre></div>
+</div>
+<p>The GET request on URL <code class="docutils literal notranslate"><span class="pre">/sensor/&lt;id&gt;/values?&lt;from&gt;&amp;&lt;to&gt;</span></code> triggers <code class="docutils literal notranslate"><span class="pre">find_sensor_data_by_sensor_id_and_time_range</span></code> function.</p>
+<p><code class="docutils literal notranslate"><span class="pre">find_sensor_data_by_sensor_id_and_time_range</span></code> takes <code class="docutils literal notranslate"><span class="pre">session</span></code>, <code class="docutils literal notranslate"><span class="pre">id</span></code>, <code class="docutils literal notranslate"><span class="pre">from</span></code> and <code class="docutils literal notranslate"><span class="pre">to</span></code> as params. The function runs a <code class="docutils literal notranslate"><span class="pre">SELECT</span></code> query then returns <code class="docutils literal notranslate"><span class="pre">rows</span></code>.</p>
+<p>To test out the API in your terminal, use the following command: <code class="docutils literal notranslate"><span class="pre">$</span> <span class="pre">curl</span> <span class="pre">http://127.0.0.1:8000/api/owner/{id}</span></code> and expect the following response:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>
+[{&quot;address&quot;:&quot;home&quot;,&quot;age&quot;:57,&quot;name&quot;:&quot;tlmodylu&quot;,&quot;owner_id&quot;:&quot;a05fd0df-0f97-4eec-a211-cad28a6e5360&quot;,&quot;pet_id&quot;:&quot;a52adc4e-7cf4-47ca-b561-3ceec9382917&quot;,&quot;weight&quot;:5}]
+
+```
+
+```
+</pre></div>
+</div>
+</section>
+</section>
+
+                
+                    <div class="post-content"><div class="content-navigation">
+    <div class="navigation navigation--prev">
+        
+            <a class="navigation__link" href="build-with-javascript.html">
+                <button class="navigation__button">
+                    <i class="scylla-icon scylla-icon--chevron-left"></i>
+                </button>
+                <div class="navigation__title">
+                    <span class="colored">PREVIOUS</span> <br />Build an IoT App with JavaScript
+                </div>
+            </a>
+        
+    </div>
+    <div class="navigation navigation--next">
+        
+            <a class="navigation__link" href="build-with-java.html">
+                <div class="navigation__title">
+                    <span class="colored">NEXT</span> <br />Build an IoT App with Java
+                </div>
+                <button class="navigation__button">
+                    <i class="scylla-icon scylla-icon--chevron-right"></i>
+                </button>
+            </a>
+        
+    </div>
+</div></div>
+                
+            </div>
+            <div class="sidebar-left  large-order-1">
+                
+                    
+                        <div id="side-nav" class="side-nav custom-scroll-bar" data-closable data-toggler=".show">
+    <button class="collapsible-button">
+        <i class="scylla-icon scylla-icon--chevron-left"></i>
+    </button>
+    <div class="side-nav-content">
+        <div class="side-nav__search">
+            <div class="search-box">
+                <ci-search></ci-search>
+            </div>
+        </div>
+        <div class="side-nav__versions"></div>
+        <div class="side-nav__content">
+            <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="getting-started.html">Getting Started with CarePet: A sample IoT App</a></li>
+<li class="toctree-l1"><a class="reference internal" href="design_and_data_model.html">Design and Data Model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="build-with-go.html">Build with Go</a></li>
+<li class="toctree-l1"><a class="reference internal" href="build-with-javascript.html">Build with JavaScript</a></li>
+<li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Build with Rust</a></li>
+<li class="toctree-l1"><a class="reference internal" href="build-with-java.html">Build with Java</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/scylladb/care-pet">Care-Pet GitHub Repository</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://www.scylladb.com/2020/09/09/carepet-an-example-iot-use-case-for-hands-on-app-developers/">Care-Pet Blog</a></li>
+</ul>
+
+        </div>
+    </div>
+</div>
+                    
+                
+            </div>
+            
+                <div class="sidebar-right large-order-3">
+                    <div class="secondary-side-nav custom-scroll-bar">
+    
+    <ul class="contribute">
+        <li class="contribute__item">
+            <a href="https://github.com/scylladb/care-pet/issues/new?title=Issue in page Build an IoT App with Rust&&body=I%20would%20like%20to%20report%20an%20issue%20in%20page%20https://care-pet.docs.scylladb.com/master/build-with-rust%0A%0A%23%23%23%20Problem%0A%0A%23%23%23%20%20Suggest%20a%20fix"
+                target="_blank">
+                <i class="icon fab fa-github" aria-hidden="true"></i>Create an issue
+            </a>
+        </li>
+        
+            <li class="contribute__item">
+                
+                
+                    
+                        
+                    
+                
+                <a href="https://github.com/scylladb/care-pet/edit/master/docs/build-with-rust.md"
+                    target="_blank">
+                    <i class="icon fa fa-edit" aria-hidden="true"></i>Edit this page
+                </a>
+            </li>
+        
+    </ul>
+
+    
+        <div class="secondary-side-nav__content">
+            <p class="topic-title">On this page</p>
+            <ul>
+<li><a class="reference internal" href="#">Build an IoT App with Rust</a><ul>
+<li><a class="reference internal" href="#architecture">Architecture</a></li>
+<li><a class="reference internal" href="#migrate">Migrate</a></li>
+<li><a class="reference internal" href="#sensor">Sensor</a></li>
+<li><a class="reference internal" href="#server">Server</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+    
+</div>
+                </div>
+            
+        </section>
+
+        <footer class="footer">
+    <div class="footer-group">
+        <div class="footer-top">
+            <a class="footer-logo" href="https://www.scylladb.com">
+                <img src="_static/img/logo-scylla-horizontal-RGB.svg" alt="Logo" />
+            </a>
+            <div class="footer-links">
+                <a class="footer-links__link" href="https://docs.scylladb.com/">Docs</a>
+                <a class="footer-links__link" href="https://www.scylladb.com/company/contact-us/">Contact Us</a>
+                <a class="footer-links__link" href="https://www.scylladb.com/company/">About Us</a>
+            </div>
+            <div class="footer-actions">
+                <a class="footer-actions__link" href="https://groups.google.com/g/scylladb-users" target="_blank">
+                    <span data-tooltip tabindex="1" title="User mailing list" data-position="bottom">
+                        <img src="_static/img/icons/icon-mail-list.svg" alt="Mail List Icon" />
+                    </span>
+                </a>
+                <a class="footer-actions__link" href="http://slack.scylladb.com/" target="_blank">
+                    <span data-tooltip tabindex="1" title="User Slack channel" data-position="bottom">
+                        <img src="_static/img/icons/icon-slack.svg" alt="Slack Icon" />
+                    </span>
+                </a>
+            </div>
+        </div>
+
+        <div class="footer-bottom">
+            
+                <div class="footer-bottom__copyright">
+                    
+                        
+                            &#169; 2022, ScyllaDB. All rights reserved.
+                        
+                    
+                </div>
+            
+            
+                <div class="footer-bottom__last-updated">
+                    
+                        Last updated on 27 April 2022.
+                    
+                </div>
+            
+            <div class="footer-bottom__version">
+                Powered by
+                <a href="http://sphinx-doc.org/">Sphinx 4.3.2</a> &amp;
+                <a href="https://sphinx-theme.scylladb.com/">ScyllaDB Theme 1.2.1</a>
+            </div>
+        </div>
+    </div>
+</footer>
+
+        <noscript>
+            <iframe src="https://www.googletagmanager.com/ns.html?id=GTM-T8P2JP" height="0" width="0"
+                style="display: none; visibility: hidden"></iframe>
+        </noscript>
+    </body>
+
+</html>

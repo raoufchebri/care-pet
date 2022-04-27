@@ -1,0 +1,568 @@
+
+
+<!DOCTYPE html>
+<html class="no-js" lang="en">
+    
+    
+
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width initial-scale=1" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <title>
+             Getting Started with CarePet: A sample IoT App | Scylla Docs 
+        </title>
+        <meta name="description" content="ScyllaDB IoT Example Documentation" />
+        <link rel="icon" href="_static/img/favicon.ico" type="image/x-icon" />
+        <link rel="icon" href="_static/img/favicon-32x32.png" sizes="32x32" />
+        <link rel="icon" href="_static/img/favicon-228x228.png" sizes="192x192" />
+        <link rel="apple-touch-icon" href="_static/img/favicon-228x228.png" />
+        <meta name="msapplication-TileImage" href="_static/img/favicon-228x228.png" />
+        
+            
+            <link rel="canonical" href="https://care-pet.docs.scylladb.com/stable/getting-started.html"/>
+        
+        <link rel="author" href="mailto:info@scylladb.com" />
+
+        
+            
+        <!-- increase expertrec loading priority-->
+        <link rel="dns-prefetch" href="https://cse.expertrec.com">
+
+        <!-- increase font loading priority -->
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link rel="preload" as="style"
+            href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,400;0,500;0,700;1,400&display=swap" />
+
+        <!-- async CSS -->
+        <link rel="stylesheet" media="print" onload="this.onload=null;this.removeAttribute('media');"
+            href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,400;0,500;0,700;1,400&display=swap" />
+
+        <!-- no-JS fallback -->
+        <noscript>
+            <link rel="stylesheet"
+                href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,400;0,500;0,700;1,400&display=swap" />
+        </noscript>
+        
+            
+                <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+            
+        
+            
+                <link rel="stylesheet" type="text/css" href="_static/css/main.css" />
+            
+        
+            
+                <link rel="stylesheet" type="text/css" href="_static/sphinx_collapse.css" />
+            
+        
+            
+                <link rel="stylesheet" type="text/css" href="_static/copybutton.css" />
+            
+        
+    
+        
+        
+            
+
+        <script type="text/javascript" id="documentation_options" data-url_root="./"
+            src="_static/documentation_options.js"></script>
+        <script type="text/javascript" src="_static/js/runtime.bundle.js"></script>
+        <script type="text/javascript" src="_static/js/main.bundle.js"></script>
+        
+            
+                <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+            
+        
+            
+        
+            
+                <script src="_static/underscore.js"></script>
+            
+        
+            
+                <script src="_static/doctools.js"></script>
+            
+        
+            
+                <script src="_static/clipboard.min.js"></script>
+            
+        
+            
+                <script src="_static/copybutton.js"></script>
+            
+        
+    
+            <!-- Google Tag Manager -->
+<script>
+    (function (w, d, s, l, i) {
+        w[l] = w[l] || [];
+        w[l].push({
+            "gtm.start": new Date().getTime(),
+            event: "gtm.js"
+        });
+        var f = d.getElementsByTagName(s)[0],
+        j = d.createElement(s),
+        dl = l != "dataLayer" ? "&l=" + l : "";
+        j.async = true;
+        j.src = "https://www.googletagmanager.com/gtm.js?id=" + i + dl;
+        f.parentNode.insertBefore(j, f);
+    })(window, document, "script", "dataLayer", "GTM-T8P2JP");
+</script>
+<!-- End Google Tag Manager -->
+<!-- Marketo -->
+<script type="text/javascript">
+    (function () {
+        var didInit = false;
+
+        function initMunchkin() {
+            if (didInit === false) {
+                didInit = true;
+                Munchkin.init("791-QBF-350");
+            }
+        }
+        var s = document.createElement("script");
+        s.type = "text/javascript";
+        s.async = true;
+        s.src = "//munchkin.marketo.net/munchkin.js";
+        s.onreadystatechange = function () {
+            if (this.readyState == "complete" || this.readyState == "loaded") {
+                initMunchkin();
+            }
+        };
+        s.onload = initMunchkin;
+        document.getElementsByTagName("head")[0].appendChild(s);
+    })();
+</script>
+<!-- End Marketo -->
+<!-- Expertrec -->
+<script>
+    var id = "e2077224-9ccf-11e9-a0c9-0242ac130002";
+    var ci_search = document.createElement("script");
+    ci_search.type = "text/javascript";
+    ci_search.async = true;
+    ci_search.src = "https://cse.expertrec.com/api/js/ci_common.js?id=" + id;
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(ci_search, s);
+</script>
+<!-- End Expertrec -->
+        
+        <!-- Font Awesome -->
+        <script src="https://kit.fontawesome.com/b1870adf6a.js" crossorigin="anonymous"></script>
+        <!-- End Font Awesome -->
+    </head>
+
+    <body>
+        
+        <header class="header">
+    <div class="header-logo">
+        <a class="header-logo__img" href="https://scylladb.com/">
+            <img src="_static/img/logo-docs.svg" alt="Scylla Documentation Logo" />
+        </a>
+        <span class="header-logo__bar"></span>
+        <a class="header-logo__text" href="https://docs.scylladb.com/">
+            Documentation
+        </a>
+    </div>
+    <div class="header-navigation">
+        <ul class="dropdown menu scylla-dropdown scylla-dropdown--header" data-dropdown-menu>
+            <li class="scylla-dropdown__item">
+                <a href="#" class="scylla-dropdown__title">Server
+                    <i class="chevron scylla-icon scylla-icon--triangle-down"></i></a>
+                <ul class="menu scylla-dropdown__content">
+                    <li>
+                        <a href="https://docs.scylladb.com/">
+                            <i class="scylla-icon scylla-icon--about-us"></i>
+                            Scylla Open Source
+                        </a>
+                    </li>
+                    <li>
+                        <a href="https://docs.scylladb.com/">
+                            <i class="scylla-icon scylla-icon--enterprise"></i>Scylla Enterprise
+                        </a>
+                    </li>
+                    <li>
+                        <a href="https://scylla.docs.scylladb.com/stable/alternator/alternator.html">
+                            <i class="scylla-icon scylla-icon--overview"></i>
+                            Scylla Alternator
+                        </a>
+                    </li>
+                </ul>
+            </li>
+            <li class="scylla-dropdown__item">
+                <a href="#" class="scylla-dropdown__title">Cloud <i
+                    class="chevron scylla-icon scylla-icon--triangle-down"></i></a>
+                <ul class="menu scylla-dropdown__content">
+                    <li>
+                        <a href="https://cloud.scylladb.com/">
+                            <i class="scylla-icon scylla-icon--cloud"></i>Scylla Cloud</a>
+                    </li>
+                    <li>
+                        <a href="https://docs.scylladb.com/scylla-cloud/">
+                            <i class="scylla-icon scylla-icon--cloud-docs"></i>Scylla Cloud
+                            Docs</a>
+                    </li>
+                </ul>
+            </li>
+            <li class="scylla-dropdown__item">
+                <a href="#" class="scylla-dropdown__title">Tools <i
+                    class="chevron scylla-icon scylla-icon--triangle-down"></i></a>
+                <ul class="menu scylla-dropdown__content">
+                    <li>
+                        <a href="https://manager.docs.scylladb.com/">
+                            <i class="scylla-icon scylla-icon--manager"></i>Scylla Manager</a>
+                    </li>
+                    <li>
+                        <a href="https://monitoring.docs.scylladb.com/">
+                            <i class="scylla-icon scylla-icon--monitoring"></i>Scylla
+                            Monitoring Stack</a>
+                    </li>
+                    <li>
+                        <a href="https://operator.docs.scylladb.com/">
+                            <i class="scylla-icon scylla-icon--operator"></i>Scylla Operator
+                        </a>
+                    </li>
+                </ul>
+            </li>
+            <li class="scylla-dropdown__item">
+                <a href="#" class="scylla-dropdown__title">Drivers <i
+                    class="chevron scylla-icon scylla-icon--triangle-down"></i></a>
+                <ul class="menu scylla-dropdown__content">
+                    <li>
+                        <a href="https://docs.scylladb.com/using-scylla/drivers/cql-drivers/">
+                            <i class="scylla-icon scylla-icon--nsql-guides"></i>CQL Drivers
+                        </a>
+                    </li>
+                    <li>
+                        <a href="https://docs.scylladb.com/using-scylla/drivers/dynamo-drivers/">
+                            <i class="scylla-icon scylla-icon--overview"></i>DynamoDB Drivers
+                        </a>
+                    </li>
+                </ul>
+            </li>
+        </ul>
+        <div class="header-button">
+            <a href="https://www.scylladb.com/download/" class="button">Download</a>
+        </div>
+    </div>
+    <div class="header-search-box">
+        <div class="search-box">
+            <ci-search></ci-search>
+        </div>
+    </div>
+    <div class="side-nav-toggle" data-toggle="side-nav">
+    <div class="side-nav-toggle__button">
+        <img src="_static/img/menu.svg" alt="Menu" />
+    </div>
+</div>
+</header>
+        <section
+            class="layout  layout--sidebar layout--has-secondary-sidebar ">
+            <div class="content large-order-2">
+                
+                    
+                
+                
+                    <div class="pre-content">
+                        <div class="breadcrumbs">
+    <span class="bread__item">
+        <a href="index.html"
+            class="bread__highlight">
+            <i class="fas fa-home"></i> ScyllaDB IoT Example Documentation
+        </a>
+    </span>
+    
+    <span class="bread__item bread__item--last">Getting Started with CarePet: A sample IoT App</span>
+</div>
+                    </div>
+                
+                <section id="getting-started-with-carepet-a-sample-iot-app">
+<h1>Getting Started with CarePet: A sample IoT App<a class="headerlink" href="#getting-started-with-carepet-a-sample-iot-app" title="Permalink to this headline">¶</a></h1>
+<section id="introduction">
+<h2>Introduction<a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h2>
+<p>This guide will show you how to create an IoT app from scratch and configure it
+to use Scylla as the backend datastore. It’ll walk you through all the stages
+of the development process, from gathering requirements to building and running
+the application.</p>
+<p>As an example, you will use an application called CarePet. CarePet allows pet
+owners to track their pets’ health by monitoring their key health parameters,
+such as temperature or pulse. The application consists of three parts:</p>
+<ul class="simple">
+<li><p>A pet collar with sensors that collects pet health data and sends the data to the datastore.</p></li>
+<li><p>A web app for reading the data and analyzing the pets’ health.</p></li>
+<li><p>A database migration module.</p></li>
+</ul>
+<p>You can use this example with minimal changes for any IoT application.</p>
+</section>
+<section id="architecture">
+<h2>Architecture<a class="headerlink" href="#architecture" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">migrate</span></code> - Creates the CarePet keyspace and tables.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">sensor</span></code> - Generates pet health data and pushes it into storage.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">server</span></code> - REST API service for tracking the pets’ health state.</p></li>
+</ul>
+<p><img alt="Build your first ScyllaDB Powered App - Raouf" src="https://user-images.githubusercontent.com/13738772/158378310-11a39630-b390-4df0-8096-2c1751e56570.jpg" /></p>
+</section>
+<section id="requirements">
+<h2>Requirements<a class="headerlink" href="#requirements" title="Permalink to this headline">¶</a></h2>
+<section id="prerequisites-for-deploying-the-application">
+<h3>Prerequisites for Deploying the Application<a class="headerlink" href="#prerequisites-for-deploying-the-application" title="Permalink to this headline">¶</a></h3>
+<p>The example application uses Docker to run a three-node ScyllaDB cluster. You can also use Scylla Cloud as your database.
+Claim your free Scylla Cloud account <a class="reference external" href="https://scylladb.com/cloud">here</a>.</p>
+</section>
+<section id="use-case-requirements">
+<h3>Use Case Requirements<a class="headerlink" href="#use-case-requirements" title="Permalink to this headline">¶</a></h3>
+<p>Each pet collar has sensors that report four different measurements:
+temperature, pulse, location, and respiration.</p>
+<p>The collar reads the measurements from the sensors once per second
+and sends the data directly to the app.</p>
+</section>
+<section id="performance-requirements">
+<h3>Performance Requirements<a class="headerlink" href="#performance-requirements" title="Permalink to this headline">¶</a></h3>
+<p>The application has two performance-related parts: sensors that write to
+the database (throughput sensitive) and a backend dashboard that reads from
+the database (latency sensitive).</p>
+<ul class="simple">
+<li><p>This example assumes 99% writes (sensors) and 1% reads (backend dashboard).</p></li>
+<li><p>SLA:</p>
+<ul>
+<li><p>Writes: throughput of 100K operations per second.</p></li>
+<li><p>Reads: latency of up to 10 milliseconds for the
+<a class="reference external" href="https://engineering.linkedin.com/performance/who-moved-my-99th-percentile-latency">99th percentile</a>.</p></li>
+</ul>
+</li>
+<li><p>The application requires high availability and fault tolerance. Even if a
+ScyllaDB node goes down or becomes unavailable, the cluster is expected to
+remain available and continue to provide service. You can learn more about
+Scylla high availability in <a class="reference external" href="https://university.scylladb.com/courses/scylla-essentials-overview/lessons/high-availability/">this lesson</a>.</p></li>
+</ul>
+</section>
+</section>
+<section id="deploying-the-application">
+<h2>Deploying the Application<a class="headerlink" href="#deploying-the-application" title="Permalink to this headline">¶</a></h2>
+<ol>
+<li><p>Check out the care-pet repository from GitHub and go to the directory of
+the language you want to use (Go, Java, etc.):</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">git</span> <span class="n">clone</span> <span class="n">git</span><span class="nd">@github</span><span class="o">.</span><span class="n">com</span><span class="p">:</span><span class="n">scylladb</span><span class="o">/</span><span class="n">care</span><span class="o">-</span><span class="n">pet</span><span class="o">.</span><span class="n">git</span>
+<span class="n">cd</span> <span class="n">go</span>
+</pre></div>
+</div>
+</li>
+<li><p>Create a local ScyllaDB cluster consisting of three nodes:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">docker</span><span class="o">-</span><span class="n">compose</span> <span class="n">up</span> <span class="o">-</span><span class="n">d</span>
+</pre></div>
+</div>
+<p>Docker-compose will spin up a ScyllaDB cluster consisting of three nodes:
+carepet-scylla1, carepet-scylla2 and carepet-scylla3. The process will
+take about two minutes.</p>
+</li>
+<li><p>Check the status of the cluster:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">docker</span> <span class="n">exec</span> <span class="o">-</span><span class="n">it</span> <span class="n">carepet</span><span class="o">-</span><span class="n">scylla1</span> <span class="n">nodetool</span> <span class="n">status</span>
+</pre></div>
+</div>
+</li>
+<li><p>Continue by following the instructions for the programming language you’re using. See <a class="reference external" href="#build-the-application-with-your-programming-language">Build the Application with Your Programming Language</a>.</p></li>
+</ol>
+</section>
+<section id="build-the-application-with-your-programming-language">
+<h2>Build the Application with Your Programming Language<a class="headerlink" href="#build-the-application-with-your-programming-language" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><p><a class="reference internal" href="build-with-go.html"><span class="doc">Build with Go</span></a></p></li>
+<li><p><a class="reference internal" href="build-with-java.html"><span class="doc">Build with Java</span></a></p></li>
+<li><p><a class="reference internal" href="build-with-javascript.html"><span class="doc">Build with JavaScript</span></a></p></li>
+<li><p><a class="reference internal" href="build-with-rust.html"><span class="doc">Build with Rust</span></a></p></li>
+</ul>
+</section>
+<section id="additional-resources">
+<h2>Additional Resources<a class="headerlink" href="#additional-resources" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><p><a class="reference external" href="https://university.scylladb.com/courses/scylla-essentials-overview/">Scylla Essentials</a> course on Scylla University. It provides an introduction to Scylla and explains the basics.</p></li>
+<li><p><a class="reference external" href="https://university.scylladb.com/courses/data-modeling/">Data Modeling and Application Development</a> course on Scylla University. It explains basic and advanced data modeling techniques, including information on workflow application, query analysis, denormalization, and other NoSQL data modeling topics.</p></li>
+<li><p><a class="reference external" href="https://docs.scylladb.com/">Scylla Documentation</a></p></li>
+<li><p>Scylla users <a class="reference external" href="http://slack.scylladb.com/">slack channel</a></p></li>
+</ul>
+<p>Future Work</p>
+<ul class="simple">
+<li><p>Add Sizing</p></li>
+<li><p>Add Benchmarking</p></li>
+<li><p>Add Python implementation</p></li>
+<li><p>In a real-world application, it would be better to aggregate data in an internal buffer and send it once a day to the application gateway in a batch, implying techniques such as delta encoding. It could also aggregate data at a lower resolution and take measurements less frequently. The collar could notify the pet’s owner about suspicious health parameters directly or via the application.</p></li>
+<li><p>Add location tracking info to send alerts when the pet enters/leaves safe zones using known WiFi networks.</p></li>
+<li><p>Use the measurements to present to the pet owner health alerts, vital signs, sleeping levels, activity levels, and calories burned.</p></li>
+</ul>
+</section>
+</section>
+
+                
+                    <div class="post-content"><div class="content-navigation">
+    <div class="navigation navigation--prev">
+        
+            <a class="navigation__link" href="index.html">
+                <button class="navigation__button">
+                    <i class="scylla-icon scylla-icon--chevron-left"></i>
+                </button>
+                <div class="navigation__title">
+                    <span class="colored">PREVIOUS</span> <br />Scylla Care-Pet Example
+                </div>
+            </a>
+        
+    </div>
+    <div class="navigation navigation--next">
+        
+            <a class="navigation__link" href="design_and_data_model.html">
+                <div class="navigation__title">
+                    <span class="colored">NEXT</span> <br />Design and Data Model
+                </div>
+                <button class="navigation__button">
+                    <i class="scylla-icon scylla-icon--chevron-right"></i>
+                </button>
+            </a>
+        
+    </div>
+</div></div>
+                
+            </div>
+            <div class="sidebar-left  large-order-1">
+                
+                    
+                        <div id="side-nav" class="side-nav custom-scroll-bar" data-closable data-toggler=".show">
+    <button class="collapsible-button">
+        <i class="scylla-icon scylla-icon--chevron-left"></i>
+    </button>
+    <div class="side-nav-content">
+        <div class="side-nav__search">
+            <div class="search-box">
+                <ci-search></ci-search>
+            </div>
+        </div>
+        <div class="side-nav__versions"></div>
+        <div class="side-nav__content">
+            <ul class="current">
+<li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Getting Started with CarePet: A sample IoT App</a></li>
+<li class="toctree-l1"><a class="reference internal" href="design_and_data_model.html">Design and Data Model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="build-with-go.html">Build with Go</a></li>
+<li class="toctree-l1"><a class="reference internal" href="build-with-javascript.html">Build with JavaScript</a></li>
+<li class="toctree-l1"><a class="reference internal" href="build-with-rust.html">Build with Rust</a></li>
+<li class="toctree-l1"><a class="reference internal" href="build-with-java.html">Build with Java</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/scylladb/care-pet">Care-Pet GitHub Repository</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://www.scylladb.com/2020/09/09/carepet-an-example-iot-use-case-for-hands-on-app-developers/">Care-Pet Blog</a></li>
+</ul>
+
+        </div>
+    </div>
+</div>
+                    
+                
+            </div>
+            
+                <div class="sidebar-right large-order-3">
+                    <div class="secondary-side-nav custom-scroll-bar">
+    
+    <ul class="contribute">
+        <li class="contribute__item">
+            <a href="https://github.com/scylladb/care-pet/issues/new?title=Issue in page Getting Started with CarePet: A sample IoT App&&body=I%20would%20like%20to%20report%20an%20issue%20in%20page%20https://care-pet.docs.scylladb.com/master/getting-started%0A%0A%23%23%23%20Problem%0A%0A%23%23%23%20%20Suggest%20a%20fix"
+                target="_blank">
+                <i class="icon fab fa-github" aria-hidden="true"></i>Create an issue
+            </a>
+        </li>
+        
+            <li class="contribute__item">
+                
+                
+                    
+                        
+                    
+                
+                <a href="https://github.com/scylladb/care-pet/edit/master/docs/getting-started.md"
+                    target="_blank">
+                    <i class="icon fa fa-edit" aria-hidden="true"></i>Edit this page
+                </a>
+            </li>
+        
+    </ul>
+
+    
+        <div class="secondary-side-nav__content">
+            <p class="topic-title">On this page</p>
+            <ul>
+<li><a class="reference internal" href="#">Getting Started with CarePet: A sample IoT App</a><ul>
+<li><a class="reference internal" href="#introduction">Introduction</a></li>
+<li><a class="reference internal" href="#architecture">Architecture</a></li>
+<li><a class="reference internal" href="#requirements">Requirements</a><ul>
+<li><a class="reference internal" href="#prerequisites-for-deploying-the-application">Prerequisites for Deploying the Application</a></li>
+<li><a class="reference internal" href="#use-case-requirements">Use Case Requirements</a></li>
+<li><a class="reference internal" href="#performance-requirements">Performance Requirements</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#deploying-the-application">Deploying the Application</a></li>
+<li><a class="reference internal" href="#build-the-application-with-your-programming-language">Build the Application with Your Programming Language</a></li>
+<li><a class="reference internal" href="#additional-resources">Additional Resources</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+    
+</div>
+                </div>
+            
+        </section>
+
+        <footer class="footer">
+    <div class="footer-group">
+        <div class="footer-top">
+            <a class="footer-logo" href="https://www.scylladb.com">
+                <img src="_static/img/logo-scylla-horizontal-RGB.svg" alt="Logo" />
+            </a>
+            <div class="footer-links">
+                <a class="footer-links__link" href="https://docs.scylladb.com/">Docs</a>
+                <a class="footer-links__link" href="https://www.scylladb.com/company/contact-us/">Contact Us</a>
+                <a class="footer-links__link" href="https://www.scylladb.com/company/">About Us</a>
+            </div>
+            <div class="footer-actions">
+                <a class="footer-actions__link" href="https://groups.google.com/g/scylladb-users" target="_blank">
+                    <span data-tooltip tabindex="1" title="User mailing list" data-position="bottom">
+                        <img src="_static/img/icons/icon-mail-list.svg" alt="Mail List Icon" />
+                    </span>
+                </a>
+                <a class="footer-actions__link" href="http://slack.scylladb.com/" target="_blank">
+                    <span data-tooltip tabindex="1" title="User Slack channel" data-position="bottom">
+                        <img src="_static/img/icons/icon-slack.svg" alt="Slack Icon" />
+                    </span>
+                </a>
+            </div>
+        </div>
+
+        <div class="footer-bottom">
+            
+                <div class="footer-bottom__copyright">
+                    
+                        
+                            &#169; 2022, ScyllaDB. All rights reserved.
+                        
+                    
+                </div>
+            
+            
+                <div class="footer-bottom__last-updated">
+                    
+                        Last updated on 27 April 2022.
+                    
+                </div>
+            
+            <div class="footer-bottom__version">
+                Powered by
+                <a href="http://sphinx-doc.org/">Sphinx 4.3.2</a> &amp;
+                <a href="https://sphinx-theme.scylladb.com/">ScyllaDB Theme 1.2.1</a>
+            </div>
+        </div>
+    </div>
+</footer>
+
+        <noscript>
+            <iframe src="https://www.googletagmanager.com/ns.html?id=GTM-T8P2JP" height="0" width="0"
+                style="display: none; visibility: hidden"></iframe>
+        </noscript>
+    </body>
+
+</html>
